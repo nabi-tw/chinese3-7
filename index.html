@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>TOCFL B2–C1 クイズ形式単語練習（繁體＋注音）</title>
+<style>
+  body{font-family:system-ui;background:#0b0f14;color:#e8f0f7;margin:0;padding:20px;}
+  .card{background:#121821;border:1px solid #1b2431;border-radius:16px;padding:24px;max-width:600px;margin:40px auto;text-align:center;}
+  .word{font-size:36px;margin-bottom:8px;}
+  .zhuyin{font-size:22px;color:#b8d3ea;margin-bottom:16px;}
+  .jp{font-size:20px;color:#f7e7b7;margin-top:16px;}
+  .ex{color:#d1dfec;margin-top:8px;}
+  button{background:#1a2a3c;color:#e8f0f7;border:1px solid #3c5a7c;padding:10px 20px;border-radius:10px;cursor:pointer;font-size:16px;}
+  button:hover{background:#23344a;}
+</style>
+</head>
+<body>
+<div class="card" id="quizCard">
+  <div class="word" id="word">—</div>
+  <div class="zhuyin" id="zhuyin">—</div>
+  <div class="jp" id="jp" style="display:none">—</div>
+  <div class="ex" id="ex" style="display:none">—</div>
+  <button id="showBtn">解答を見る</button>
+  <button id="nextBtn">次の問題</button>
+</div>
+
+<script>
+const data=[
+  {word:"夏令",pron:"ㄒㄧㄚˋ ㄌㄧㄥˋ",jp:"（夏の期間・制度）",ex:"博物館在夏令延長開放時間，晚上也能參觀。"},
+  {word:"炎夏",pron:"ㄧㄢˊ ㄒㄧㄚˋ",jp:"猛暑の夏",ex:"炎夏午後的雷陣雨來得又急又猛。"},
+  {word:"山腰",pron:"ㄕㄢ ㄧㄠ",jp:"山腹・中腹",ex:"那座小村落就坐落在山腰，視野特別開闊。"},
+  {word:"蜂腰",pron:"ㄈㄥ ㄧㄠ",jp:"蜂のように細い腰（比喩）",ex:"這件洋裝把她的身形襯得蜂腰長腿。"},
+  {word:"抬轎子",pron:"ㄊㄞˊ ㄐㄧㄠˋ ˙ㄗ",jp:"（轎子を）担ぐ；おだてて持ち上げる（比喩）",ex:"開會時別光抬轎子，也要提出具體建議。"},
+  {word:"樹梢",pron:"ㄕㄨˋ ㄕㄠ",jp:"梢（こずえ）",ex:"月亮正從樹梢慢慢升起。"},
+  {word:"柳梢",pron:"ㄌㄧㄡˇ ㄕㄠ",jp:"柳の梢",ex:"春風拂過柳梢，湖面泛起一圈圈漣漪。"},
+  {word:"眉梢",pron:"ㄇㄟˊ ㄕㄠ",jp:"眉の端",ex:"她一聽到好消息，眉梢眼角都笑開了。"},
+  {word:"髮梢",pron:"ㄈㄚˇ ㄕㄠ",jp:"毛先",ex:"雨水打濕了她的髮梢。"},
+  {word:"船梢",pron:"ㄔㄨㄢˊ ㄕㄠ",jp:"船尾の端／舷端（文語）",ex:"老漁夫坐在船梢，望著遠方的燈火。"},
+  {word:"禮俗",pron:"ㄌㄧˇ ㄙㄨˊ",jp:"礼儀と風俗",ex:"出國前先了解當地禮俗，可以避免不少誤會。"},
+  {word:"身肩重任",pron:"ㄕㄣ ㄐㄧㄢ ㄓㄨㄥˋ ㄖㄣˋ",jp:"重責を担う（※慣用は『肩負重任／身負重任』）",ex:"作為隊長，他身肩重任，必須以身作則。"}
+];
+let idx=0;
+function showQuestion(){
+  const item=data[idx];
+  document.getElementById('word').textContent=item.word;
+  document.getElementById('zhuyin').textContent=item.pron;
+  document.getElementById('jp').style.display='none';
+  document.getElementById('ex').style.display='none';
+}
+function showAnswer(){
+  const item=data[idx];
+  document.getElementById('jp').textContent=item.jp;
+  document.getElementById('ex').textContent=item.ex;
+  document.getElementById('jp').style.display='block';
+  document.getElementById('ex').style.display='block';
+}
+function next(){
+  idx=(idx+1)%data.length;
+  showQuestion();
+}
+document.getElementById('showBtn').onclick=showAnswer;
+document.getElementById('nextBtn').onclick=next;
+showQuestion();
+</script>
+</body>
+</html>
