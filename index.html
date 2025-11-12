@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>TOCFL B2–C1 クイズ形式単語練習（繁體＋注音）</title>
+<style>
+  body{font-family:system-ui;background:#0b0f14;color:#e8f0f7;margin:0;padding:20px;}
+  .card{background:#121821;border:1px solid #1b2431;border-radius:16px;padding:24px;max-width:600px;margin:40px auto;text-align:center;}
+  .word{font-size:36px;margin-bottom:8px;}
+  .zhuyin{font-size:22px;color:#b8d3ea;margin-bottom:16px;}
+  .jp{font-size:20px;color:#f7e7b7;margin-top:16px;}
+  .ex{color:#d1dfec;margin-top:8px;}
+  button{background:#1a2a3c;color:#e8f0f7;border:1px solid #3c5a7c;padding:10px 20px;border-radius:10px;cursor:pointer;font-size:16px;}
+  button:hover{background:#23344a;}
+</style>
+</head>
+<body>
+<div class="card" id="quizCard">
+  <div class="word" id="word">—</div>
+  <div class="zhuyin" id="zhuyin">—</div>
+  <div class="jp" id="jp" style="display:none">—</div>
+  <div class="ex" id="ex" style="display:none">—</div>
+  <button id="showBtn">解答を見る</button>
+  <button id="nextBtn">次の問題</button>
+</div>
+
+<script>
+const data=[
+  {word:"夏令",pron:"ㄒㄧㄚˋ ㄌㄧㄥˋ",jp:"（夏の期間・制度）",ex:"博物館在夏令延長開放時間，晚上也能參觀。"},
+  {word:"炎夏",pron:"ㄧㄢˊ ㄒㄧㄚˋ",jp:"猛暑の夏",ex:"炎夏午後的雷陣雨來得又急又猛。"},
+  {word:"山腰",pron:"ㄕㄢ ㄧㄠ",jp:"山腹・中腹",ex:"那座小村落就坐落在山腰，視野特別開闊。"},
+  {word:"蜂腰",pron:"ㄈㄥ ㄧㄠ",jp:"蜂のように細い腰（比喩）",ex:"這件洋裝把她的身形襯得蜂腰長腿。"},
+  {word:"抬轎子",pron:"ㄊㄞˊ ㄐㄧㄠˋ ˙ㄗ",jp:"（轎子を）担ぐ；おだてて持ち上げる（比喩）",ex:"開會時別光抬轎子，也要提出具體建議。"},
+  {word:"樹梢",pron:"ㄕㄨˋ ㄕㄠ",jp:"梢（こずえ）",ex:"月亮正從樹梢慢慢升起。"},
+  {word:"柳梢",pron:"ㄌㄧㄡˇ ㄕㄠ",jp:"柳の梢",ex:"春風拂過柳梢，湖面泛起一圈圈漣漪。"},
+  {word:"眉梢",pron:"ㄇㄟˊ ㄕㄠ",jp:"眉の端",ex:"她一聽到好消息，眉梢眼角都笑開了。"},
+  {word:"髮梢",pron:"ㄈㄚˇ ㄕㄠ",jp:"毛先",ex:"雨水打濕了她的髮梢。"},
+  {word:"船梢",pron:"ㄔㄨㄢˊ ㄕㄠ",jp:"船尾の端／舷端（文語）",ex:"老漁夫坐在船梢，望著遠方的燈火。"},
+  {word:"禮俗",pron:"ㄌㄧˇ ㄙㄨˊ",jp:"礼儀と風俗",ex:"出國前先了解當地禮俗，可以避免不少誤會。"},
+  {word:"身肩重任",pron:"ㄕㄣ ㄐㄧㄢ ㄓㄨㄥˋ ㄖㄣˋ",jp:"重責を担う（※慣用は『肩負重任／身負重任』）",ex:"作為隊長，他身肩重任，必須以身作則。"},
+  {word:"易如反掌",pron:"ㄧˋ ㄖㄨˊ ㄈㄢˇ ㄓㄤˇ",jp:"非常に簡単である／朝飯前",ex:"對他來說，解這道數學題易如反掌。"},
+  {word:"掌舵",pron:"ㄓㄤˇ ㄉㄨㄛˋ",jp:"舵を取る／指導的立場に立つ",ex:"他在公司掌舵多年，帶領團隊度過了無數危機。"},
+  {word:"掌政",pron:"ㄓㄤˇ ㄓㄥˋ",jp:"政治を掌握する",ex:"他掌政期間推行了多項改革，社會反應不一。"},
+  {word:"掌權",pron:"ㄓㄤˇ ㄑㄩㄢˊ",jp:"権力を握る",ex:"當他掌權之後，政策方向明顯改變。"},
+  {word:"花瓣",pron:"ㄏㄨㄚ ㄅㄢˋ",jp:"花びら",ex:"春風吹起，櫻花瓣在空中飄舞。"},
+  {word:"蒜瓣",pron:"ㄙㄨㄢˋ ㄅㄢˋ",jp:"にんにくのかけら",ex:"媽媽切了幾瓣蒜，準備炒青菜。"},
+  {word:"攤開",pron:"ㄊㄢ ㄎㄞ",jp:"広げる",ex:"他把地圖攤開，仔細研究路線。"},
+  {word:"展平",pron:"ㄓㄢˇ ㄆㄧㄥˊ",jp:"平らに伸ばす",ex:"她用手將皺摺的紙展平。"},
+  {word:"陳設",pron:"ㄔㄣˊ ㄕㄜˋ",jp:"展示して並べる／陳列する",ex:"展覽館裡陳設著各式各樣的藝術品。"},
+  {word:"佈置",pron:"ㄅㄨˋ ㄓˋ",jp:"配置する／飾る",ex:"他花了一下午佈置房間，準備迎接朋友。"},
+  {word:"鋪排",pron:"ㄆㄨ ㄆㄞˊ",jp:"段取りを整える／配置を整える",ex:"活動的每個細節都經過精心鋪排。"},
+  {word:"渲染",pron:"ㄒㄩㄢˋ ㄖㄢˇ",jp:"雰囲気を醸し出す／強調して表現する",ex:"這部電影善於渲染氣氛，讓觀眾深受感動。"},
+  {word:"點染",pron:"ㄉㄧㄢˇ ㄖㄢˇ",jp:"部分的に色をつける／少し加える",ex:"畫家在畫布上點染了幾抹金色。"},
+  {word:"覆蓋",pron:"ㄈㄨˋ ㄍㄞˋ",jp:"覆う／覆い尽くす",ex:"整座山被白雪覆蓋，看起來十分壯麗。"},
+  {word:"反覆無常",pron:"ㄈㄢˇ ㄈㄨˋ ㄨˊ ㄔㄤˊ",jp:"気分や態度がころころ変わる",ex:"他的情緒反覆無常，讓人難以捉摸。"},
+  {word:"枝椏",pron:"ㄓ ㄧㄚ",jp:"枝分かれした枝",ex:"樹的枝椏上掛滿了果實。"},
+  {word:"一簇紅霞",pron:"ㄧ ㄘㄨˋ ㄏㄨㄥˊ ㄒㄧㄚˊ",jp:"一かたまりの赤い夕焼け雲",ex:"夕陽西下，天邊出現了一簇紅霞。"},
+  {word:"華團錦簇",pron:"ㄏㄨㄚˊ ㄊㄨㄢˊ ㄐㄧㄣˇ ㄘㄨˋ",jp:"華やかで色とりどりな様子",ex:"花園裡華團錦簇，美不勝收。"},
+  {word:"花蕊",pron:"ㄏㄨㄚ ㄖㄨㄟˇ",jp:"花のしべ",ex:"蜜蜂停在花蕊上採蜜。"},
+  {word:"銅牆鐵壁",pron:"ㄊㄨㄥˊ ㄑㄧㄤˊ ㄊㄧㄝˇ ㄅㄧˋ",jp:"非常に堅固な防衛・守り",ex:"兩國邊境防線堅如銅牆鐵壁。"},
+  {word:"萬花筒",pron:"ㄨㄢˋ ㄏㄨㄚ ㄊㄨㄥˇ",jp:"万華鏡／多彩な様子",ex:"夜市的燈光像萬花筒一樣繽紛。"},
+  {word:"筆筒",pron:"ㄅㄧˇ ㄊㄨㄥˇ",jp:"ペン立て",ex:"他從筆筒裡拿出一支鋼筆。"},
+  {word:"別有洞天",pron:"ㄅㄧㄝˊ ㄧㄡˇ ㄉㄨㄥˋ ㄊㄧㄢ",jp:"別世界のように美しい／隠れた趣がある",ex:"走進這家老屋，裡面別有洞天。"},
+  {word:"拾獲",pron:"ㄕˊ ㄏㄨㄛˋ",jp:"拾って得る／発見して手に入れる",ex:"警方拾獲了失主遺失的錢包。"},
+  {word:"巴掌",pron:"ㄅㄚ ㄓㄤˇ",jp:"手のひら／平手打ち",ex:"他氣得給了對方一個巴掌。"},
+  {word:"衣裳",pron:"ㄧ ㄕㄤ˙",jp:"衣装／服装",ex:"舞者穿著傳統衣裳登場。"},
+  {word:"捕捉",pron:"ㄅㄨˇ ㄓㄨㄛˊ",jp:"捕らえる／キャッチする",ex:"攝影師成功捕捉到那一瞬間的微笑。"},
+  {word:"床鋪",pron:"ㄔㄨㄤˊ ㄆㄨˋ",jp:"寝床／ベッド",ex:"旅館的床鋪整理得很乾淨。"},
+  {word:"明媒正娶",pron:"ㄇㄧㄥˊ ㄇㄟˊ ㄓㄥˋ ㄑㄩˇ",jp:"正式に結婚する",ex:"他終於明媒正娶，辦了一場盛大的婚禮。"},
+  {word:"捎信",pron:"ㄕㄠ ㄒㄧㄣˋ",jp:"伝言を持たせる／手紙を託す",ex:"他讓朋友幫忙捎信給家人。"},
+  {word:"捎來",pron:"ㄕㄠ ㄌㄞˊ",jp:"持ってくる（特に人に頼まれて）",ex:"郵差捎來了一封久違的信。"},
+  {word:"悄然",pron:"ㄑㄧㄠˇ ㄖㄢˊ",jp:"静かに／ひっそりと",ex:"夜色中，他悄然離開了。"},
+  {word:"靜悄悄",pron:"ㄐㄧㄥˋ ㄑㄧㄠˇ ㄑㄧㄠˇ",jp:"とても静かである",ex:"教室裡靜悄悄的，連呼吸聲都聽得見。"},
+  {word:"思辨",pron:"ㄙ ㄅㄧㄢˋ",jp:"思索し分析する",ex:"哲學課訓練學生的思辨能力。"},
+  {word:"辨別",pron:"ㄅㄧㄢˋ ㄅㄧㄝˊ",jp:"見分ける／区別する",ex:"他能輕易辨別出真假商品。"},
+  {word:"辯解",pron:"ㄅㄧㄢˋ ㄐㄧㄝˇ",jp:"弁解する",ex:"面對指責，他試圖辯解但無人理會。"},
+  {word:"辮子",pron:"ㄅㄧㄢˋ ㄗ˙",jp:"髪の三つ編み",ex:"她的辮子垂到腰間。"},
+  {word:"髮辮",pron:"ㄈㄚˇ ㄅㄧㄢˋ",jp:"髪の編み込み／辮子",ex:"女孩編著整齊的髮辮，看起來很可愛。"},
+  {word:"揭開",pron:"ㄐㄧㄝ ㄎㄞ",jp:"覆いを開ける／秘密を明らかにする",ex:"記者揭開了事件背後的真相。"},
+  {word:"便服",pron:"ㄅㄧㄢˋ ㄈㄨˊ",jp:"私服／普段着",ex:"今天不用穿制服，可以穿便服上班。"}
+];
+let idx=0;
+function showQuestion(){
+  const item=data[idx];
+  document.getElementById('word').textContent=item.word;
+  document.getElementById('zhuyin').textContent=item.pron;
+  document.getElementById('jp').style.display='none';
+  document.getElementById('ex').style.display='none';
+}
+function showAnswer(){
+  const item=data[idx];
+  document.getElementById('jp').textContent=item.jp;
+  document.getElementById('ex').textContent=item.ex;
+  document.getElementById('jp').style.display='block';
+  document.getElementById('ex').style.display='block';
+}
+function next(){
+  idx=(idx+1)%data.length;
+  showQuestion();
+}
+document.getElementById('showBtn').onclick=showAnswer;
+document.getElementById('nextBtn').onclick=next;
+showQuestion();
+</script>
+</body>
+</html>
